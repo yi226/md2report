@@ -4,17 +4,19 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'global.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  Global.init();
   runApp(const MyApp());
   doWhenWindowReady(() {
     const initialSize = Size(400, 600);
     appWindow.minSize = const Size(300, 450);
     appWindow.size = initialSize;
-    appWindow.alignment = Alignment.center;
+    // appWindow.alignment = Alignment.center;
     appWindow.show();
   });
 }
@@ -74,6 +76,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> generate() async {
+    File out = File('bin/output.docx');
+    if (out.existsSync()) {
+      out.deleteSync();
+    }
     showDialog(
         context: context,
         builder: (context) => const AlertDialog(
@@ -90,21 +96,21 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       converting = 1;
     });
-    File out = File('bin/output.docx');
+    out = File('bin/output.docx');
 
-    if (out.existsSync()) {
-      // ignore: use_build_context_synchronously
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                content: Text('Output file: ${out.path}'),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text("OK"))
-                ],
-              ));
-    }
+    // ignore: use_build_context_synchronously
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: out.existsSync()
+                  ? Text('Output file: ${out.path}')
+                  : const Text("An error occurred"),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("OK"))
+              ],
+            ));
   }
 
   Future<void> convert() async {
@@ -114,6 +120,40 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       terminal = e.toString();
     }
+  }
+
+  void checkPandoc() async {
+    try {
+      await Process.run('pandoc', ['-h']);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: const Text("Error"),
+                content: const Text("Please install Pandoc first."),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        _launchUrl("https://pandoc.org/installing.html");
+                      },
+                      child: const Text("Pandoc Home Page"))
+                ],
+              ));
+    }
+  }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri sourceUrl = Uri.parse(url);
+
+    if (!await launchUrl(sourceUrl)) {
+      throw 'Could not launch $sourceUrl';
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkPandoc();
   }
 
   @override
@@ -192,10 +232,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       global.mode = global.mode == ThemeMode.light
                           ? ThemeMode.dark
                           : ThemeMode.light;
+                      await Global().save('mode', global.mode.index.toString());
                     },
                     icon: Icon(global.mode == ThemeMode.light
                         ? Icons.light_mode
