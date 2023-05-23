@@ -210,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                     showAboutDialog(
                       context: context,
                       applicationName: "md2report",
-                      applicationVersion: "1.0.0",
+                      applicationVersion: "1.1.0",
                       applicationIcon: const FlutterLogo(),
                       children: [
                         const Center(child: Text("Author: alfie")),
