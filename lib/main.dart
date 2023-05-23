@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     }
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (context) => const AlertDialog(
               content: SizedBox(
                 height: 50,
@@ -116,7 +117,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> convert() async {
     try {
       final result = await Process.run('run.bat', [file]);
-      terminal = result.stdout.toString();
+      terminal = '${result.stdout}\n${result.stderr}';
     } catch (e) {
       terminal = e.toString();
     }
@@ -252,12 +253,12 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   if (file.isNotEmpty && converting == 1)
                     Container(
-                      color: Colors.black54,
+                      color: Colors.black12,
                       child: ListView(
                         children: [
                           SelectableText(
                             terminal,
-                            style: const TextStyle(color: Colors.white),
+                            // style: const TextStyle(color: Colors.white),
                           )
                         ],
                       ),
