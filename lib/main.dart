@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> generate() async {
-    File out = File('bin/output.docx');
+    File out = File('output.docx');
     if (out.existsSync()) {
       out.deleteSync();
     }
@@ -97,14 +97,18 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       converting = 1;
     });
-    out = File('bin/output.docx');
+    out = File('md2report/source/output.docx');
+    if (out.existsSync()) {
+      out.copySync('output.docx');
+      out.deleteSync();
+    }
 
     // ignore: use_build_context_synchronously
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              content: out.existsSync()
-                  ? Text('Output file: ${out.path}')
+              content: File('output.docx').existsSync()
+                  ? const Text('Output file: output.docx')
                   : const Text("An error occurred"),
               actions: [
                 TextButton(
