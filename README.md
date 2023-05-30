@@ -1,16 +1,21 @@
-# md2report
+# md2report app
 
-A new Flutter project.
+A GUI application for [md2report: 一个用于将Markdown文件转换为可以直接提交给学校的docx实验报告/大作业报告/期末小论文的工具](https://github.com/woolen-sheep/md2report).
 
-## Getting Started
+## Quick Start
 
-This project is a starting point for a Flutter application.
+1. 安装[Pandoc](https://pandoc.org/installing.html)
+2. 下载最新Release压缩包并解压后，运行md2report.exe
 
-A few resources to get you started if this is your first Flutter project:
+## Features
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [x] 打包好的Python环境
+- [x] 图形化界面
+- [x] Pandoc环境检测
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Examples
+
+|          Light           |          Dark           |
+| :----------------------: | :---------------------: |
+| ![light](pics/light.png) | ![light](pics/dark.png) |
+
